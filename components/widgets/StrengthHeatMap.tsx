@@ -11,7 +11,7 @@ interface StrengthHeatMapProps {
   selectedTeam?: string;
 }
 
-export function StrengthHeatMap({ teams, matrix, _maxValue, _minValue, selectedTeam }: StrengthHeatMapProps) {
+export function StrengthHeatMap({ teams, matrix, maxValue, minValue, selectedTeam }: StrengthHeatMapProps) {
   const getColor = (value: number) => {
     if (value === -1) return 'transparent';
     
