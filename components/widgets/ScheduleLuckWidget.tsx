@@ -26,7 +26,7 @@ const Tooltip = ({ text }: { text: string }) => (
 export function ScheduleLuckWidget({ selectedTeam }: ScheduleLuckWidgetProps) {
   const { data, isLoading, error } = useQuery<StrengthData>({
     queryKey: ['schedule_strength'],
-    queryFn: () => fetch('http://localhost:8000/schedule_strength').then(res => res.json())
+    queryFn: () => fetch('/api/schedule_strength').then(res => res.json())
   });
 
   if (isLoading) return <div>Loading...</div>;

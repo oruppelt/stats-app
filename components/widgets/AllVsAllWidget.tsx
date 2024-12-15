@@ -13,7 +13,7 @@ interface StrengthData {
     'Team1 ': string;
     [key: string]: number | string;
   }[];
-  metadata: {
+  metadata?: {
     maxWinRate: number;
     minWinRate: number;
   };
@@ -33,6 +33,10 @@ export function AllVsAllWidget({ selectedTeam }: AllVsAllWidgetProps) {
   if (error) return <div>Error loading data</div>
   if (!data?.matrix) return null
 
+  // Calculate max and min win rates if metadata is not provided
+  const maxWinRate = data.metadata?.maxWinRate ?? 1
+  const minWinRate = data.metadata?.minWinRate ?? 0
+
   return (
     <div className="flex flex-col items-center justify-center">
       <h2 className="text-xl font-bold mb-4">Team Win Rates</h2>
@@ -42,8 +46,8 @@ export function AllVsAllWidget({ selectedTeam }: AllVsAllWidgetProps) {
           teams={data.teams}
           matrix={data.matrix}
           matrix_wins={data.matrix_wins}
-          maxValue={data.metadata.maxWinRate}
-          minValue={data.metadata.minWinRate}
+          maxValue={maxWinRate}
+          minValue={minWinRate}
           selectedTeam={selectedTeam}
         />
       </div>

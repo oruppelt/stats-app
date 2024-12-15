@@ -23,11 +23,15 @@ export function ScheduleStrengthWidget({ selectedTeam }: ScheduleStrengthWidgetP
   const { data, isLoading, error } = useQuery<StrengthData>({
     queryKey: ['schedule_strength'],
     queryFn: async () => {
-      const response = await fetch('http://localhost:8000/schedule_strength')
+      const response = await fetch('/api/schedule_strength')
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
-      return response.json()
+      const data = await response.json()
+      if (!data.matrix) {
+        throw new Error('No matrix data in response')
+      }
+      return data
     }
   })
 
