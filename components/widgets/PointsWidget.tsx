@@ -39,6 +39,25 @@ interface TooltipContext {
   };
 }
 
+// Add these custom interfaces
+interface CustomDataPoint extends ScatterDataPoint {
+  team?: string;
+}
+
+interface CustomChartData extends ChartData<'scatter', CustomDataPoint[]> {
+  datasets: {
+    label: string;
+    data: CustomDataPoint[];
+    pointStyle?: (HTMLImageElement | string)[];
+    pointRadius?: number;
+    borderColor?: string;
+    borderWidth?: number;
+    borderDash?: number[];
+    showLine?: boolean;
+    type?: 'line';
+  }[];
+}
+
 export function PointsWidget() {
   const { data, isLoading, error } = useQuery<PointsData>({
     queryKey: ['points'],
@@ -73,7 +92,7 @@ export function PointsWidget() {
   const medianScoredFor = calculateMedian(scores.map(d => d['Scored For']))
   const medianScoredAgainst = calculateMedian(scores.map(d => d['Scored Against']))
 
-  const chartData = {
+  const chartData: CustomChartData = {
     datasets: [
       {
         label: 'Teams',
@@ -90,7 +109,7 @@ export function PointsWidget() {
         pointRadius: 20,
       },
       {
-        type: 'line' as const,
+        type: 'line',
         label: 'Median Points For',
         data: [
           { x: medianScoredFor, y: Math.min(...scores.map(d => d['Scored Against'])) * 0.9 },
@@ -103,7 +122,7 @@ export function PointsWidget() {
         showLine: true,
       },
       {
-        type: 'line' as const,
+        type: 'line',
         label: 'Median Points Against',
         data: [
           { x: Math.min(...scores.map(d => d['Scored For'])) * 0.9, y: medianScoredAgainst },

@@ -17,8 +17,7 @@ interface HeatMapProps {
 }
 
 export function HeatMap({ teams, matrix, matrix_wins, maxValue, minValue, selectedTeam }: HeatMapProps) {
-  const getColor = (value: number, winValue: number) => {
-    // Use winValue for coloring
+  const getColor = (value: number, winValue: number): string => {
     if (winValue === -1) return 'transparent';
     if (winValue === 0) return 'rgb(255, 165, 0)'; // Orange
     if (winValue === 1) return 'rgb(0, 255, 0)'; // Green

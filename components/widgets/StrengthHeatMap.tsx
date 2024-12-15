@@ -12,7 +12,7 @@ interface StrengthHeatMapProps {
 }
 
 export function StrengthHeatMap({ teams, matrix, maxValue, minValue, selectedTeam }: StrengthHeatMapProps) {
-  const getColor = (value: number) => {
+  const getColor = (value: number): string => {
     if (value === -1) return 'transparent';
     
     const normalizedValue = (value + 1) / 2;
@@ -22,7 +22,7 @@ export function StrengthHeatMap({ teams, matrix, maxValue, minValue, selectedTea
     return `rgb(${red}, ${green}, 0)`;
   };
 
-  const ColorLegend = () => (
+  const ColorLegend = (): JSX.Element => (
     <div className="flex items-center gap-2 mt-4">
       <div className="flex h-4 w-32 rounded">
         <div className="w-1/3 bg-red-500" />
