@@ -9,7 +9,9 @@ import {
   Tooltip,
   Legend,
   ScatterDataPoint,
-  ChartOptions
+  ChartOptions,
+  TooltipModel,
+  TooltipItem
 } from 'chart.js'
 
 ChartJS.register(
@@ -196,11 +198,12 @@ export function PointsWidget() {
         enabled: true,
         position: 'nearest',
         callbacks: {
-          label: (context: TooltipContext) => {
-            if (context.raw.team) {
-              return `${context.raw.team} (For: ${context.raw.x}, Against: ${context.raw.y})`
+          label: function(this: TooltipModel<'scatter'>, context: TooltipItem<'scatter'>): string {
+            const dataPoint = context.raw as CustomDataPoint;
+            if (dataPoint.team) {
+              return `${dataPoint.team} (For: ${dataPoint.x}, Against: ${dataPoint.y})`;
             }
-            return ''
+            return '';
           }
         },
         z: 100
