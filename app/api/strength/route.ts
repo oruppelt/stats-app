@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/strength`)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}for_against`)
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
