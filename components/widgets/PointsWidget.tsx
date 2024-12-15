@@ -8,8 +8,8 @@ import {
   LineElement,
   Tooltip,
   Legend,
-  ChartData,
-  ScatterDataPoint
+  ScatterDataPoint,
+  ChartOptions
 } from 'chart.js'
 
 ChartJS.register(
@@ -20,6 +20,7 @@ ChartJS.register(
   Legend
 )
 
+// Define the data structure from the API
 interface TeamScore {
   Team: string;
   'Scored For': number;
@@ -30,7 +31,28 @@ interface PointsData {
   df_scores: TeamScore[];
 }
 
-// Add this interface for the tooltip context
+// Define custom types for the chart
+interface CustomDataPoint extends ScatterDataPoint {
+  team?: string;
+}
+
+type DatasetType = {
+  label: string;
+  data: CustomDataPoint[];
+  pointStyle?: (HTMLImageElement | string)[];
+  pointRadius?: number;
+  borderColor?: string;
+  borderWidth?: number;
+  borderDash?: number[];
+  showLine?: boolean;
+  type?: 'line';
+}
+
+interface CustomChartData {
+  datasets: DatasetType[];
+}
+
+// Define tooltip context type
 interface TooltipContext {
   raw: {
     team?: string;
@@ -39,32 +61,12 @@ interface TooltipContext {
   };
 }
 
-// Add these custom interfaces
-interface CustomDataPoint extends ScatterDataPoint {
-  team?: string;
-}
-
-interface CustomChartData extends ChartData<'scatter', CustomDataPoint[]> {
-  datasets: {
-    label: string;
-    data: CustomDataPoint[];
-    pointStyle?: (HTMLImageElement | string)[];
-    pointRadius?: number;
-    borderColor?: string;
-    borderWidth?: number;
-    borderDash?: number[];
-    showLine?: boolean;
-    type?: 'line';
-  }[];
-}
-
 export function PointsWidget() {
   const { data, isLoading, error } = useQuery<PointsData>({
     queryKey: ['points'],
     queryFn: () => fetch('/api/for_against').then(res => res.json())
   })
 
-  // Calculate medians
   const calculateMedian = (arr: number[]): number => {
     const sorted = [...arr].sort((a, b) => a - b)
     const mid = Math.floor(sorted.length / 2)
@@ -77,15 +79,16 @@ export function PointsWidget() {
     <div className="flex justify-center items-center h-screen">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
     </div>
-  );
-  
+  )
+
   if (error) return (
     <div className="flex justify-center items-center h-screen">
       <div className="text-red-500 bg-red-50 p-4 rounded-lg shadow">
         Error loading data: {String(error)}
       </div>
     </div>
-  );
+  )
+
   if (!data?.df_scores) return <div className="flex justify-center items-center h-screen">No data available</div>
 
   const scores = data.df_scores
@@ -137,13 +140,13 @@ export function PointsWidget() {
     ]
   }
 
-  // Calculate bounds for each axis separately
-  const minX = Math.min(...scores.map(d => d['Scored For'])) * 0.9;
-  const maxX = Math.max(...scores.map(d => d['Scored For'])) * 1.1;
-  const minY = Math.min(...scores.map(d => d['Scored Against'])) * 0.9;
-  const maxY = Math.max(...scores.map(d => d['Scored Against'])) * 1.1;
+  // Calculate bounds for each axis
+  const minX = Math.min(...scores.map(d => d['Scored For'])) * 0.9
+  const maxX = Math.max(...scores.map(d => d['Scored For'])) * 1.1
+  const minY = Math.min(...scores.map(d => d['Scored Against'])) * 0.9
+  const maxY = Math.max(...scores.map(d => d['Scored Against'])) * 1.1
 
-  const options = {
+  const options: ChartOptions<'scatter'> = {
     maintainAspectRatio: false,
     scales: {
       x: {
@@ -152,7 +155,7 @@ export function PointsWidget() {
           text: 'Points For',
           font: {
             size: 14,
-            weight: 'bold' as const
+            weight: 'bold'
           }
         },
         min: minX,
@@ -171,7 +174,7 @@ export function PointsWidget() {
           text: 'Points Against',
           font: {
             size: 14,
-            weight: 'bold' as const
+            weight: 'bold'
           }
         },
         min: minY,
@@ -207,22 +210,7 @@ export function PointsWidget() {
         text: 'Points For and Against',
         font: {
           size: 16,
-          weight: 'bold' as const
-        }
-      },
-      annotation: {
-        id: 'quadrants',
-        beforeDraw(chart: ChartJS) {
-          const { ctx, scales } = chart;
-          ctx.save();
-          ctx.font = '14px Arial';
-          ctx.fillStyle = 'rgba(0,0,0,0.5)';
-          ctx.fillText('Strong Offense, Weak Defense', 
-            scales.x.getPixelForValue(maxX * 0.8), 
-            scales.y.getPixelForValue(maxY * 0.2)
-          );
-          // Add other quadrant labels...
-          ctx.restore();
+          weight: 'bold'
         }
       }
     }
