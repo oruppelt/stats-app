@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Scatter } from 'react-chartjs-2'
 import { useQuery } from '@tanstack/react-query'
 import {
