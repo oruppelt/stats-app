@@ -20,7 +20,7 @@ export function Dashboard() {
   // Fetch teams list from any of the endpoints that provide it
   const { data } = useQuery<TeamsData>({
     queryKey: ['strength'],
-    queryFn: () => fetch(`${process.env.NEXT_BACKEND_API_URL}/strength`).then(res => res.json())
+    queryFn: () => fetch('/api/strength').then(res => res.json())
   })
 
   return (
