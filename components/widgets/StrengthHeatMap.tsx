@@ -11,7 +11,7 @@ interface StrengthHeatMapProps {
   selectedTeam?: string;
 }
 
-export function StrengthHeatMap({ teams, matrix, maxValue, minValue, selectedTeam }: StrengthHeatMapProps) {
+export function StrengthHeatMap({ teams, matrix, _maxValue, _minValue, selectedTeam }: StrengthHeatMapProps) {
   const getColor = (value: number) => {
     if (value === -1) return 'transparent';
     
@@ -70,7 +70,7 @@ export function StrengthHeatMap({ teams, matrix, maxValue, minValue, selectedTea
       <div className="grid" style={{ 
         gridTemplateColumns: `160px repeat(${teams.length}, 35px)`
       }}>
-        {matrix.map((row, rowIndex) => {
+        {matrix.map((row, _rowIndex) => {
           const isSelectedTeamRow = row['Team1 '] === selectedTeam;
           return (
             <React.Fragment key={row['Team1 ']}>

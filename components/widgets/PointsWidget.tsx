@@ -6,7 +6,9 @@ import {
   PointElement,
   LineElement,
   Tooltip,
-  Legend
+  Legend,
+  ChartData,
+  ScatterDataPoint
 } from 'chart.js'
 
 ChartJS.register(
@@ -25,6 +27,15 @@ interface TeamScore {
 
 interface PointsData {
   df_scores: TeamScore[];
+}
+
+// Add this interface for the tooltip context
+interface TooltipContext {
+  raw: {
+    team?: string;
+    x: number;
+    y: number;
+  };
 }
 
 export function PointsWidget() {
@@ -162,7 +173,7 @@ export function PointsWidget() {
         enabled: true,
         position: 'nearest',
         callbacks: {
-          label: (context: any) => {
+          label: (context: TooltipContext) => {
             if (context.raw.team) {
               return `${context.raw.team} (For: ${context.raw.x}, Against: ${context.raw.y})`
             }
@@ -181,7 +192,7 @@ export function PointsWidget() {
       },
       annotation: {
         id: 'quadrants',
-        beforeDraw(chart: any) {
+        beforeDraw(chart: ChartJS) {
           const { ctx, scales } = chart;
           ctx.save();
           ctx.font = '14px Arial';
