@@ -11,7 +11,9 @@ import {
   ScatterDataPoint,
   ChartOptions,
   TooltipModel,
-  TooltipItem
+  TooltipItem,
+  ChartData,
+  ChartTypeRegistry
 } from 'chart.js'
 
 ChartJS.register(
@@ -38,21 +40,8 @@ interface CustomDataPoint extends ScatterDataPoint {
   team?: string;
 }
 
-type DatasetType = {
-  label: string;
-  data: CustomDataPoint[];
-  pointStyle?: (HTMLImageElement | string)[];
-  pointRadius?: number;
-  borderColor?: string;
-  borderWidth?: number;
-  borderDash?: number[];
-  showLine?: boolean;
-  type?: 'line';
-}
-
-interface CustomChartData {
-  datasets: DatasetType[];
-}
+// Create a specific type for the scatter dataset
+type ScatterChartData = ChartData<'scatter', CustomDataPoint[], unknown>;
 
 // Define tooltip context type
 interface TooltipContext {
@@ -97,9 +86,10 @@ export function PointsWidget() {
   const medianScoredFor = calculateMedian(scores.map(d => d['Scored For']))
   const medianScoredAgainst = calculateMedian(scores.map(d => d['Scored Against']))
 
-  const chartData: CustomChartData = {
+  const chartData: ScatterChartData = {
     datasets: [
       {
+        type: 'scatter', // Explicitly set type for the first dataset
         label: 'Teams',
         data: scores.map(team => ({
           x: team['Scored For'],
@@ -114,7 +104,7 @@ export function PointsWidget() {
         pointRadius: 20,
       },
       {
-        type: 'line',
+        type: 'scatter', // Change to scatter type
         label: 'Median Points For',
         data: [
           { x: medianScoredFor, y: Math.min(...scores.map(d => d['Scored Against'])) * 0.9 },
@@ -127,7 +117,7 @@ export function PointsWidget() {
         showLine: true,
       },
       {
-        type: 'line',
+        type: 'scatter', // Change to scatter type
         label: 'Median Points Against',
         data: [
           { x: Math.min(...scores.map(d => d['Scored For'])) * 0.9, y: medianScoredAgainst },
@@ -205,8 +195,7 @@ export function PointsWidget() {
             }
             return '';
           }
-        },
-        z: 100
+        }
       },
       title: {
         display: true,
