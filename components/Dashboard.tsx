@@ -125,7 +125,7 @@ export function Dashboard() {
       </div>
 
       <div>
-        {activeWidget === "points" && <PointsWidget />}
+        {activeWidget === "points" && <PointsWidget selectedTeam={selectedTeam} />}
         {activeWidget === "allvsall" && <AllVsAllWidget selectedTeam={selectedTeam} />}
         {activeWidget === "teamstrength" && <TeamStrengthWidget selectedTeam={selectedTeam} />}
         {activeWidget === "schedule" && <ScheduleStrengthWidget selectedTeam={selectedTeam} />}
