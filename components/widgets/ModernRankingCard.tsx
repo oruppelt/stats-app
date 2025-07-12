@@ -1,0 +1,99 @@
+import { TeamLogo } from './TeamLogo'
+
+interface ModernRankingCardProps {
+  rank: number;
+  teamName: string;
+  value: number;
+  label: string;
+  isSelected?: boolean;
+  onClick?: () => void;
+  children?: React.ReactNode; // For custom content like progress bars
+}
+
+export function ModernRankingCard({ 
+  rank, 
+  teamName, 
+  value, 
+  label, 
+  isSelected = false, 
+  onClick,
+  children 
+}: ModernRankingCardProps) {
+  
+  const getRankingBadge = (rank: number) => {
+    if (rank === 1) return { emoji: '🥇', bgColor: 'bg-yellow-100', textColor: 'text-yellow-800', borderColor: 'border-yellow-300' };
+    if (rank === 2) return { emoji: '🥈', bgColor: 'bg-gray-100', textColor: 'text-gray-800', borderColor: 'border-gray-300' };
+    if (rank === 3) return { emoji: '🥉', bgColor: 'bg-orange-100', textColor: 'text-orange-800', borderColor: 'border-orange-300' };
+    return { emoji: '', bgColor: 'bg-gray-50', textColor: 'text-gray-600', borderColor: 'border-gray-200' };
+  };
+
+  const badge = getRankingBadge(rank);
+
+  return (
+    <div 
+      className={`
+        relative p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer
+        ${isSelected 
+          ? 'bg-blue-50 border-blue-300 shadow-lg' 
+          : 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-md'
+        }
+      `}
+      onClick={onClick}
+    >
+      {/* Ranking Badge */}
+      <div className={`
+        absolute -top-2 -left-2 w-8 h-8 rounded-full border-2 
+        flex items-center justify-center text-sm font-bold
+        ${badge.bgColor} ${badge.textColor} ${badge.borderColor}
+      `}>
+        {badge.emoji || `#${rank}`}
+      </div>
+
+      <div className="flex items-center gap-4">
+        {/* Team Logo */}
+        <TeamLogo 
+          teamName={teamName} 
+          size={48}
+          className="flex-shrink-0"
+        />
+
+        {/* Team Info */}
+        <div className="flex-grow min-w-0">
+          <h3 className={`font-semibold text-lg truncate ${
+            isSelected ? 'text-blue-900' : 'text-gray-900'
+          }`}>
+            {teamName}
+          </h3>
+          <div className="flex items-center gap-2 mt-1">
+            <span className={`text-sm font-medium ${
+              isSelected ? 'text-blue-700' : 'text-gray-600'
+            }`}>
+              {label}:
+            </span>
+            <span className={`text-lg font-bold ${
+              isSelected ? 'text-blue-800' : 'text-gray-800'
+            }`}>
+              {typeof value === 'number' ? value.toFixed(3) : value}
+            </span>
+          </div>
+
+          {/* Custom content area (progress bars, etc.) */}
+          {children && (
+            <div className="mt-3">
+              {children}
+            </div>
+          )}
+        </div>
+
+        {/* Rank Display */}
+        <div className={`text-right flex-shrink-0 ${
+          isSelected ? 'text-blue-600' : 'text-gray-500'
+        }`}>
+          <div className="text-2xl font-bold">
+            #{rank}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

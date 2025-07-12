@@ -1,4 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query'
+import { useLogger } from '@/lib/logger'
+import { useEffect } from 'react'
+import { ModernRankingCard } from './ModernRankingCard'
+import { BidirectionalBar } from './BidirectionalBar'
 
 interface StrengthData {
   matrix: {
@@ -13,100 +17,162 @@ interface ScheduleLuckWidgetProps {
   selectedTeam: string;
 }
 
-// Add tooltip component
-const Tooltip = ({ text }: { text: string }) => (
-  <div className="group relative inline-block">
-    <span className="cursor-help">ⓘ</span>
-    <div className="invisible group-hover:visible absolute z-10 w-64 p-2 bg-black text-white text-sm rounded-lg">
-      {text}
-    </div>
-  </div>
-);
-
 export function ScheduleLuckWidget({ selectedTeam }: ScheduleLuckWidgetProps) {
+  const logger = useLogger('ScheduleLuckWidget');
+  
+  useEffect(() => {
+    logger.info('ScheduleLuckWidget mounted', { selectedTeam });
+    return () => logger.info('ScheduleLuckWidget unmounted');
+  }, [logger, selectedTeam]);
+
   const { data, isLoading, error } = useQuery<StrengthData>({
     queryKey: ['schedule_strength'],
-    queryFn: () => fetch('/api/schedule_strength').then(res => res.json())
+    queryFn: async () => {
+      logger.info('Fetching schedule luck data');
+      const response = await fetch('/api/schedule_strength');
+      if (!response.ok) {
+        const errorMsg = `HTTP ${response.status}: ${response.statusText}`;
+        logger.error('Failed to fetch schedule luck data', { status: response.status, statusText: response.statusText });
+        throw new Error(errorMsg);
+      }
+      const data = await response.json();
+      logger.info('Schedule luck data received', { 
+        teamsCount: data?.matrix?.length 
+      });
+      return data;
+    }
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading data</div>;
-  if (!data?.matrix) return null;
+  if (isLoading) {
+    logger.info('Loading schedule luck data');
+    return (
+      <div className="flex justify-center items-center p-8">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      </div>
+    );
+  }
+
+  if (error) {
+    logger.error('Error loading schedule luck data', undefined, error as Error);
+    return (
+      <div className="flex justify-center items-center p-8">
+        <div className="text-red-500 bg-red-50 p-4 rounded-lg shadow">
+          Error loading schedule luck data: {String(error)}
+        </div>
+      </div>
+    );
+  }
+
+  if (!data?.matrix) {
+    logger.warn('No schedule luck matrix data available');
+    return (
+      <div className="flex justify-center items-center p-8">
+        <div className="text-gray-600">No schedule luck data available</div>
+      </div>
+    );
+  }
 
   const rankingsData = [...data.matrix].sort((a, b) => a.Rank - b.Rank);
   
   const maxStrength = Math.max(...rankingsData.map(team => team.Strength));
   const minStrength = Math.min(...rankingsData.map(team => team.Strength));
-  const absMaxStrength = Math.max(Math.abs(maxStrength), Math.abs(minStrength));
 
-  const getBarStyles = (strength: number) => {
-    const percentage = (Math.abs(strength) / absMaxStrength) * 100;
-    return {
-      width: `${percentage}%`,
-      marginLeft: strength < 0 ? 'auto' : undefined
-    };
+  const getLuckCategory = (strength: number) => {
+    if (strength <= -1.0) return { label: 'Very Unlucky', color: 'bg-red-500', textColor: 'text-red-700' };
+    if (strength <= -0.5) return { label: 'Unlucky', color: 'bg-red-400', textColor: 'text-red-600' };
+    if (strength < 0.5 && strength > -0.5) return { label: 'Average Luck', color: 'bg-gray-400', textColor: 'text-gray-700' };
+    if (strength <= 1.0) return { label: 'Lucky', color: 'bg-green-400', textColor: 'text-green-600' };
+    return { label: 'Very Lucky', color: 'bg-green-500', textColor: 'text-green-700' };
+  };
+
+  const getPercentile = (rank: number, total: number) => {
+    const percentile = Math.round(((total - rank + 1) / total) * 100);
+    return percentile;
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-4">
-      <div className="flex items-center justify-center mb-6">
-        <h2 className="text-2xl font-bold">Schedule Luck Rankings</h2>
-        <Tooltip text="Positive values indicate an easier schedule, negative values indicate a harder schedule" />
-      </div>
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        {/* Header */}
-        <div className="grid grid-cols-4 bg-gray-50 border-b border-gray-200 font-semibold text-gray-600">
-          <div className="px-6 py-3">Rank</div>
-          <div className="px-6 py-3 col-span-2">Team</div>
-          <div className="px-6 py-3 whitespace-nowrap">
-            Schedule Luck 
+    <div className="w-full max-w-4xl mx-auto">
+      <h2 className="text-2xl font-bold mb-6 text-center">Schedule Luck Rankings</h2>
+      
+      {/* Stats Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="bg-white p-4 rounded-lg border border-gray-200 text-center">
+          <div className="text-2xl font-bold text-gray-800">{rankingsData.length}</div>
+          <div className="text-sm text-gray-600">Total Teams</div>
+        </div>
+        <div className="bg-white p-4 rounded-lg border border-gray-200 text-center">
+          <div className="text-2xl font-bold text-green-600">
+            {rankingsData.filter(t => t.Strength >= 0.5).length}
           </div>
+          <div className="text-sm text-gray-600">Lucky+ Teams</div>
         </div>
-        
-        {/* Rankings List */}
-        <div className="divide-y divide-gray-200">
-          {rankingsData.map((team) => {
-            const isSelected = team['Team1 '] === selectedTeam;
-            return (
-              <div 
-                key={team['Team1 ']} 
-                className={`grid grid-cols-4 transition-colors ${
-                  isSelected 
-                    ? 'bg-blue-50 hover:bg-blue-100' 
-                    : 'hover:bg-gray-50'
-                }`}
-              >
-                <div className={`px-6 py-4 ${isSelected ? 'text-blue-600' : 'text-gray-500'}`}>
-                  #{team.Rank}
-                </div>
-                <div className={`px-6 py-4 font-medium col-span-2 ${isSelected ? 'text-blue-700' : ''}`}>
-                  {team['Team1 ']}
-                </div>
-                <div className="px-6 py-4">
-                  <div className="flex items-center">
-                    <span className={`text-gray-700 w-16 ${isSelected ? 'text-blue-700' : ''}`}>
-                      {team.Strength.toFixed(3)}
-                    </span>
-                    <div className="ml-3 flex-grow max-w-[100px] relative">
-                      <div className="absolute h-full w-[1px] bg-gray-400 left-1/2 top-0" />
-                      <div className="h-2 rounded-full bg-gray-200">
-                        <div 
-                          className={`h-2 rounded-full ${
-                            isSelected
-                              ? team.Strength >= 0 ? 'bg-blue-500' : 'bg-blue-600'
-                              : team.Strength >= 0 ? 'bg-green-500' : 'bg-red-500'
-                          }`}
-                          style={getBarStyles(team.Strength)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        <div className="bg-white p-4 rounded-lg border border-gray-200 text-center">
+          <div className="text-2xl font-bold text-blue-600">
+            {rankingsData[rankingsData.length - 1]?.Strength.toFixed(3) || 'N/A'}
+          </div>
+          <div className="text-sm text-gray-600">Best Luck</div>
         </div>
       </div>
+
+      {/* Rankings Cards */}
+      <div className="space-y-3">
+        {rankingsData.map((team) => {
+          const isSelected = team['Team1 '] === selectedTeam;
+          const category = getLuckCategory(team.Strength);
+          const percentile = getPercentile(team.Rank, rankingsData.length);
+          
+          return (
+            <ModernRankingCard
+              key={team['Team1 ']}
+              rank={team.Rank}
+              teamName={team['Team1 ']}
+              value={team.Strength}
+              label="Schedule Luck"
+              isSelected={isSelected}
+              onClick={() => {
+                logger.userAction('schedule_luck_card_clicked', {
+                  team: team['Team1 '],
+                  rank: team.Rank,
+                  luck: team.Strength,
+                  selectedTeam
+                });
+              }}
+            >
+              {/* Bidirectional Bar */}
+              <BidirectionalBar
+                value={team.Strength}
+                minValue={minStrength}
+                maxValue={maxStrength}
+                height={16}
+                className="mt-2"
+              />
+              
+              {/* Category and Percentile */}
+              <div className="flex items-center justify-between mt-2">
+                <span className={`text-sm font-medium px-2 py-1 rounded ${category.textColor} bg-opacity-10`}>
+                  {category.label}
+                </span>
+                <span className="text-sm text-gray-500">
+                  {team.Strength >= 0 ? `Top ${100 - percentile + 1}% Lucky` : `Top ${percentile}% Unlucky`}
+                </span>
+              </div>
+            </ModernRankingCard>
+          );
+        })}
+      </div>
+
+      {/* Selected team info */}
+      {selectedTeam && (
+        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <h3 className="font-semibold text-blue-800 mb-2">
+            🍀 Viewing: {selectedTeam}
+          </h3>
+          <p className="text-sm text-blue-700">
+            {selectedTeam} is highlighted above. Schedule Luck shows how favorable their opponents&apos; strength has been.
+            Positive values = easier opponents (lucky), negative values = harder opponents (unlucky).
+          </p>
+        </div>
+      )}
     </div>
   );
 } 
