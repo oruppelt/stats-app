@@ -1,11 +1,14 @@
 import { Dashboard } from "@/components/Dashboard"
+import { Header } from "@/components/layout/Header"
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <h1 className="mb-8 text-4xl font-bold">Sports Analysis Dashboard</h1>
-      <Dashboard />
-    </main>
+    <>
+      <Header />
+      <main className="min-h-screen bg-background">
+        <Dashboard />
+      </main>
+    </>
   )
 }
 
