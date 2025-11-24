@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query'
 import { NivoHeatMap } from './NivoHeatMap'
 import { useLogger } from '@/lib/logger'
 import { useEffect } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { WidgetSkeleton } from './WidgetSkeleton'
 
 interface StrengthData {
   teams: string[];
@@ -54,23 +56,31 @@ export function AllVsAllWidget({ selectedTeam }: AllVsAllWidgetProps) {
 
   if (isLoading) {
     logger.info('Loading strength data for heatmap');
-    return <div className="flex items-center justify-center p-8">
-      <div className="text-gray-600">Loading heatmap data...</div>
-    </div>;
+    return <WidgetSkeleton variant="heatmap" />;
   }
-  
+
   if (error) {
     logger.error('Error loading strength data', undefined, error as Error);
-    return <div className="flex items-center justify-center p-8">
-      <div className="text-red-600">Error loading heatmap data</div>
-    </div>;
+    return (
+      <Card className="w-full">
+        <CardContent className="flex items-center justify-center p-8">
+          <div className="text-destructive bg-destructive/10 p-4 rounded-lg">
+            Error loading heatmap data
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
-  
+
   if (!data?.matrix) {
     logger.warn('No matrix data available for heatmap');
-    return <div className="flex items-center justify-center p-8">
-      <div className="text-gray-600">No heatmap data available</div>
-    </div>;
+    return (
+      <Card className="w-full">
+        <CardContent className="flex items-center justify-center p-8">
+          <div className="text-muted-foreground">No heatmap data available</div>
+        </CardContent>
+      </Card>
+    );
   }
 
   // Calculate max and min win rates if metadata is not provided
@@ -78,10 +88,14 @@ export function AllVsAllWidget({ selectedTeam }: AllVsAllWidgetProps) {
   const minWinRate = data.metadata?.minWinRate ?? 0
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <h2 className="text-xl font-bold mb-4">Team Win Rates</h2>
-      
-      <div className="w-full">
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>Team Win Rates - All vs All</CardTitle>
+        <CardDescription>
+          Head-to-head win rate matrix showing how each team performs against every other team
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
         <NivoHeatMap
           teams={data.teams}
           matrix={data.matrix}
@@ -90,8 +104,8 @@ export function AllVsAllWidget({ selectedTeam }: AllVsAllWidgetProps) {
           minValue={minWinRate}
           selectedTeam={selectedTeam}
         />
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   )
 }
 

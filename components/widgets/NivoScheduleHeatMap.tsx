@@ -160,31 +160,31 @@ export function NivoScheduleHeatMap({
           
           if (roundedValue === null) {
             return (
-              <div className="bg-gray-800 text-white p-3 rounded shadow-lg">
-                <div className="font-semibold">{team1} vs {team2}</div>
-                <div className="text-gray-300">No schedule data</div>
+              <div className="bg-card border border-border p-3 rounded-lg shadow-lg">
+                <div className="font-semibold text-card-foreground">{team1} vs {team2}</div>
+                <div className="text-muted-foreground text-sm">No schedule data</div>
               </div>
             );
           }
 
           return (
-            <div className="bg-white border border-gray-200 p-4 rounded-lg shadow-lg max-w-xs">
-              <div className="font-bold text-lg mb-2 text-gray-800">
+            <div className="bg-card border border-border p-4 rounded-lg shadow-lg max-w-xs">
+              <div className="font-bold text-lg mb-2 text-card-foreground">
                 {team1} vs {team2}
               </div>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Schedule Strength:</span>
-                  <span className="font-semibold text-blue-600">{roundedValue.toFixed(2)}</span>
+                  <span className="text-muted-foreground">Schedule Strength:</span>
+                  <span className="font-semibold text-primary">{roundedValue.toFixed(2)}</span>
                 </div>
-                <div className="flex items-center gap-2 mt-3 p-2 bg-gray-50 rounded">
+                <div className="flex items-center gap-2 mt-3 p-2 bg-muted rounded">
                   <span className="text-lg">{category.emoji}</span>
                   <div>
                     <div className="font-semibold text-xs">{category.label}</div>
-                    <div className="text-xs text-gray-600">{category.desc}</div>
+                    <div className="text-xs text-muted-foreground">{category.desc}</div>
                   </div>
                 </div>
-                <div className="text-xs text-gray-500 mt-2 border-t pt-2">
+                <div className="text-xs text-muted-foreground mt-2 border-t border-border pt-2">
                   {roundedValue > 0 ? 'Positive = Easier schedule' : roundedValue < 0 ? 'Negative = Harder schedule' : 'Zero = Average schedule'}
                 </div>
               </div>
@@ -217,18 +217,6 @@ export function NivoScheduleHeatMap({
         ]}
       />
       
-      {/* Selected team info panel */}
-      {selectedTeam && (
-        <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h3 className="font-semibold text-blue-800 mb-2">
-            📊 Viewing: {selectedTeam}
-          </h3>
-          <p className="text-sm text-blue-700">
-            Highlighted cells show {selectedTeam}&apos;s schedule strength against other teams.
-            Red = harder schedule, Green = easier schedule.
-          </p>
-        </div>
-      )}
     </div>
   );
 }

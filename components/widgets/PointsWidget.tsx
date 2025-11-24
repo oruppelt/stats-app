@@ -2,6 +2,8 @@ import { Scatter } from 'react-chartjs-2'
 import { useQuery } from '@tanstack/react-query'
 import { useLogger } from '@/lib/logger'
 import { useEffect } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { WidgetSkeleton } from './WidgetSkeleton'
 import {
   Chart as ChartJS,
   LinearScale,
@@ -101,30 +103,30 @@ export function PointsWidget({ selectedTeam }: PointsWidgetProps = {}) {
 
   if (isLoading) {
     logger.info('Loading points data');
-    return (
-      <div className="flex justify-center items-center p-8">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
-      </div>
-    );
+    return <WidgetSkeleton variant="scatter" />;
   }
 
   if (error) {
     logger.error('Error loading points data', undefined, error as Error);
     return (
-      <div className="flex justify-center items-center p-8">
-        <div className="text-red-500 bg-red-50 p-4 rounded-lg shadow">
-          Error loading points data: {String(error)}
-        </div>
-      </div>
+      <Card className="w-full">
+        <CardContent className="flex justify-center items-center p-8">
+          <div className="text-destructive bg-destructive/10 p-4 rounded-lg">
+            Error loading points data: {String(error)}
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
   if (!data?.df_scores) {
     logger.warn('No points data available');
     return (
-      <div className="flex justify-center items-center p-8">
-        <div className="text-gray-600">No points data available</div>
-      </div>
+      <Card className="w-full">
+        <CardContent className="flex justify-center items-center p-8">
+          <div className="text-muted-foreground">No points data available</div>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -273,22 +275,33 @@ export function PointsWidget({ selectedTeam }: PointsWidgetProps = {}) {
   }
 
   return (
-    <div className="w-full">
-      {/* Chart */}
-      <div className="w-full h-[600px] bg-white rounded-lg border border-gray-200 p-4">
-        <Scatter data={chartData} options={options} />
-      </div>
-      
+    <div className="w-full space-y-4">
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>Points For vs Points Against Analysis</CardTitle>
+          <CardDescription>
+            Scatter plot showing offensive output vs defensive performance. Green quadrant is ideal (high scoring, low points against).
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="w-full h-[600px]">
+            <Scatter data={chartData} options={options} />
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Selected team info panel */}
       {selectedTeam && (
-        <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h3 className="font-semibold text-blue-800 mb-2">
-            📊 Viewing: {selectedTeam}
-          </h3>
-          <p className="text-sm text-blue-700">
-            {selectedTeam} is highlighted with a larger logo and colored border. Hover over any team to see detailed performance analysis.
-          </p>
-        </div>
+        <Card className="border-primary">
+          <CardContent className="p-4">
+            <h3 className="font-semibold text-primary mb-2">
+              📊 Viewing: {selectedTeam}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              {selectedTeam} is highlighted with a larger logo and colored border. Hover over any team to see detailed performance analysis.
+            </p>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

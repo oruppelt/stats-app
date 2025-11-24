@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query'
 import { useLogger } from '@/lib/logger'
 import { useEffect } from 'react'
 import { NivoScheduleHeatMap } from './NivoScheduleHeatMap'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { WidgetSkeleton } from './WidgetSkeleton'
 
 interface StrengthData {
   teams: string[];
@@ -54,38 +56,42 @@ export function ScheduleStrengthWidget({ selectedTeam }: ScheduleStrengthWidgetP
 
   if (isLoading) {
     logger.info('Loading schedule strength data');
-    return (
-      <div className="flex justify-center items-center p-8">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
-      </div>
-    );
+    return <WidgetSkeleton variant="heatmap" />;
   }
 
   if (error) {
     logger.error('Error loading schedule strength data', undefined, error as Error);
     return (
-      <div className="flex justify-center items-center p-8">
-        <div className="text-red-500 bg-red-50 p-4 rounded-lg shadow">
-          Error loading schedule strength data: {String(error)}
-        </div>
-      </div>
+      <Card className="w-full">
+        <CardContent className="flex justify-center items-center p-8">
+          <div className="text-destructive bg-destructive/10 p-4 rounded-lg">
+            Error loading schedule strength data: {String(error)}
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
   if (!data?.matrix) {
     logger.warn('No schedule strength matrix data available');
     return (
-      <div className="flex justify-center items-center p-8">
-        <div className="text-gray-600">No schedule strength data available</div>
-      </div>
+      <Card className="w-full">
+        <CardContent className="flex justify-center items-center p-8">
+          <div className="text-muted-foreground">No schedule strength data available</div>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <h2 className="text-xl font-bold mb-4">Schedule Strength Analysis</h2>
-      
-      <div className="w-full">
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>Schedule Strength Analysis</CardTitle>
+        <CardDescription>
+          Visualization of opponent difficulty throughout the season. Darker colors indicate tougher matchups.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
         <NivoScheduleHeatMap
           teams={data.teams}
           matrix={data.matrix}
@@ -93,8 +99,8 @@ export function ScheduleStrengthWidget({ selectedTeam }: ScheduleStrengthWidgetP
           minValue={-1.5}
           selectedTeam={selectedTeam}
         />
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   )
 }
 
