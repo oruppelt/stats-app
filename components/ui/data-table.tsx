@@ -149,7 +149,16 @@ export function DataTable<TData, TValue>({
 }
 
 // Helper function for sortable column headers
-export function SortableHeader({ column, children }: { column: any; children: React.ReactNode }) {
+export function SortableHeader<TData>({
+  column,
+  children
+}: {
+  column: {
+    toggleSorting: (desc?: boolean) => void;
+    getIsSorted: () => false | "asc" | "desc";
+  };
+  children: React.ReactNode;
+}) {
   return (
     <Button
       variant="ghost"
