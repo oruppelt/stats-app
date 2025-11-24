@@ -1,4 +1,7 @@
-import { NextResponse } from 'next/server'
+import { NextResponse} from 'next/server'
+
+// Force dynamic rendering (no pre-rendering at build time)
+export const dynamic = 'force-dynamic'
 
 // Revalidate every 5 minutes (300 seconds)
 export const revalidate = 300
