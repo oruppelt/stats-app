@@ -1,6 +1,7 @@
 import { ResponsiveHeatMap } from '@nivo/heatmap'
 import { useLogger } from '@/lib/logger'
 import { useEffect, useMemo } from 'react'
+import { DESIGN_TOKENS } from '@/lib/design-tokens'
 
 interface NivoHeatMapProps {
   teams: string[];
@@ -39,15 +40,13 @@ export function NivoHeatMap({
 
   // Transform data for Nivo format
   const heatmapData: HeatMapData[] = useMemo(() => {
-    logger.dataTransform('transforming_matrix_to_nivo_format', matrix.length, teams.length);
-    
     return matrix.map((row, rowIndex) => {
       const teamName = row['Team1 '].trim();
-      
+
       const rowData = teams.map(team => {
         const value = row[team] as number;
         const winValue = matrix_wins?.[rowIndex]?.[team] as number ?? -1;
-        
+
         return {
           x: team.trim(),
           y: value === -1 ? null : value, // Nivo handles null values gracefully
@@ -61,15 +60,13 @@ export function NivoHeatMap({
         data: rowData
       };
     });
-  }, [matrix, matrix_wins, teams, logger]);
+  }, [matrix, matrix_wins, teams]);
 
   useEffect(() => {
+    logger.dataTransform('transforming_matrix_to_nivo_format', matrix.length, teams.length);
     logger.chartRender('nivo_heatmap', matrix.length * teams.length);
   }, [matrix, teams, logger]);
 
-
-  // Color scheme for win rates (0-1 scale)
-  const colorScheme = ['#dc2626', '#ea580c', '#eab308', '#65a30d', '#16a34a'];
 
   // Get win rate category for interpretation
   const getWinRateCategory = (value: number | null) => {
@@ -88,13 +85,7 @@ export function NivoHeatMap({
         margin={{ top: 120, right: 90, bottom: 80, left: 160 }}
         colors={{
           type: 'quantize',
-          colors: [
-            '#fef2f2', // Very light red (0-20%)
-            '#fecaca', // Light red (20-40%)
-            '#fde047', // Yellow (40-60%)
-            '#86efac', // Light green (60-80%)
-            '#22c55e'  // Green (80-100%)
-          ]
+          colors: DESIGN_TOKENS.heatmap.colors // Win rate gradient: red → yellow → green
         }}
         emptyColor="#f3f4f6"
         labelTextColor="#000000"

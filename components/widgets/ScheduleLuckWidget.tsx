@@ -80,11 +80,11 @@ export function ScheduleLuckWidget({ selectedTeam }: ScheduleLuckWidgetProps) {
   const minStrength = Math.min(...rankingsData.map(team => team.Strength));
 
   const getLuckCategory = (strength: number) => {
-    if (strength <= -1.0) return { label: 'Very Unlucky', color: 'bg-red-500', textColor: 'text-red-700' };
-    if (strength <= -0.5) return { label: 'Unlucky', color: 'bg-red-400', textColor: 'text-red-600' };
-    if (strength < 0.5 && strength > -0.5) return { label: 'Average Luck', color: 'bg-gray-400', textColor: 'text-gray-700' };
-    if (strength <= 1.0) return { label: 'Lucky', color: 'bg-green-400', textColor: 'text-green-600' };
-    return { label: 'Very Lucky', color: 'bg-green-500', textColor: 'text-green-700' };
+    if (strength <= -1.0) return { label: 'Very Unlucky', color: 'bg-very-unlucky', textColor: 'text-very-unlucky' };
+    if (strength <= -0.5) return { label: 'Unlucky', color: 'bg-unlucky', textColor: 'text-unlucky' };
+    if (strength < 0.5 && strength > -0.5) return { label: 'Average Luck', color: 'bg-neutral', textColor: 'text-neutral' };
+    if (strength <= 1.0) return { label: 'Lucky', color: 'bg-lucky', textColor: 'text-lucky' };
+    return { label: 'Very Lucky', color: 'bg-very-lucky', textColor: 'text-very-lucky' };
   };
 
   const getPercentile = (rank: number, total: number) => {

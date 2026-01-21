@@ -10,17 +10,22 @@ export function WidgetSkeleton({ variant = 'chart' }: WidgetSkeletonProps) {
     return (
       <Card className="w-full">
         <CardHeader className="space-y-2">
-          <Skeleton className="h-8 w-64" />
-          <Skeleton className="h-4 w-96" />
+          <div className="relative overflow-hidden">
+            <Skeleton className="h-8 w-64" />
+            <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          </div>
+          <div className="relative overflow-hidden">
+            <Skeleton className="h-4 w-96" />
+            <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex justify-around items-end h-[400px]">
             {[...Array(8)].map((_, i) => (
-              <Skeleton
-                key={i}
-                className="w-12"
-                style={{ height: `${Math.random() * 80 + 20}%` }}
-              />
+              <div key={i} className="relative overflow-hidden w-12" style={{ height: `${Math.random() * 80 + 20}%` }}>
+                <Skeleton className="w-full h-full" />
+                <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+              </div>
             ))}
           </div>
         </CardContent>
@@ -32,12 +37,18 @@ export function WidgetSkeleton({ variant = 'chart' }: WidgetSkeletonProps) {
     return (
       <Card className="w-full">
         <CardHeader className="space-y-2">
-          <Skeleton className="h-8 w-64" />
+          <div className="relative overflow-hidden">
+            <Skeleton className="h-8 w-64" />
+            <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-10 gap-2">
             {[...Array(100)].map((_, i) => (
-              <Skeleton key={i} className="h-12 w-12" />
+              <div key={i} className="relative overflow-hidden">
+                <Skeleton className="h-12 w-12" />
+                <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+              </div>
             ))}
           </div>
         </CardContent>
@@ -49,17 +60,26 @@ export function WidgetSkeleton({ variant = 'chart' }: WidgetSkeletonProps) {
     return (
       <Card className="w-full">
         <CardHeader className="space-y-2">
-          <Skeleton className="h-8 w-64" />
+          <div className="relative overflow-hidden">
+            <Skeleton className="h-8 w-64" />
+            <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             {[...Array(3)].map((_, i) => (
-              <Skeleton key={i} className="h-24" />
+              <div key={i} className="relative overflow-hidden">
+                <Skeleton className="h-24" />
+                <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+              </div>
             ))}
           </div>
           <div className="space-y-3">
             {[...Array(10)].map((_, i) => (
-              <Skeleton key={i} className="h-20 w-full" />
+              <div key={i} className="relative overflow-hidden">
+                <Skeleton className="h-20 w-full" />
+                <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+              </div>
             ))}
           </div>
         </CardContent>
@@ -71,10 +91,16 @@ export function WidgetSkeleton({ variant = 'chart' }: WidgetSkeletonProps) {
     return (
       <Card className="w-full">
         <CardHeader className="space-y-2">
-          <Skeleton className="h-8 w-64" />
+          <div className="relative overflow-hidden">
+            <Skeleton className="h-8 w-64" />
+            <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          </div>
         </CardHeader>
         <CardContent>
-          <Skeleton className="h-[600px] w-full" />
+          <div className="relative overflow-hidden">
+            <Skeleton className="h-[600px] w-full" />
+            <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          </div>
         </CardContent>
       </Card>
     )

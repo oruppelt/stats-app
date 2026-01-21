@@ -49,7 +49,24 @@ export default {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
-  			}
+  			},
+  			elite: 'hsl(var(--elite))',
+  			strong: 'hsl(var(--strong))',
+  			average: 'hsl(var(--average))',
+  			'below-average': 'hsl(var(--below-average))',
+  			weak: 'hsl(var(--weak))',
+  			'very-lucky': 'hsl(var(--very-lucky))',
+  			lucky: 'hsl(var(--lucky))',
+  			neutral: 'hsl(var(--neutral))',
+  			unlucky: 'hsl(var(--unlucky))',
+  			'very-unlucky': 'hsl(var(--very-unlucky))',
+  			'rank-gold': 'hsl(var(--rank-gold))',
+  			'rank-silver': 'hsl(var(--rank-silver))',
+  			'rank-bronze': 'hsl(var(--rank-bronze))',
+  			success: 'hsl(var(--success))',
+  			warning: 'hsl(var(--warning))',
+  			danger: 'hsl(var(--danger))',
+  			info: 'hsl(var(--info))'
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

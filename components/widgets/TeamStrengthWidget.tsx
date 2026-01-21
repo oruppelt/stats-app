@@ -80,11 +80,11 @@ export function TeamStrengthWidget({ selectedTeam }: TeamStrengthWidgetProps) {
   const rankingsData = [...data.matrix].sort((a, b) => a.Rank - b.Rank);
 
   const getStrengthCategory = (strength: number) => {
-    if (strength >= 0.7) return { label: 'Elite', color: 'bg-green-500', textColor: 'text-green-700' };
-    if (strength >= 0.6) return { label: 'Strong', color: 'bg-blue-500', textColor: 'text-blue-700' };
-    if (strength >= 0.5) return { label: 'Average', color: 'bg-yellow-500', textColor: 'text-yellow-700' };
-    if (strength >= 0.4) return { label: 'Below Average', color: 'bg-orange-500', textColor: 'text-orange-700' };
-    return { label: 'Weak', color: 'bg-red-500', textColor: 'text-red-700' };
+    if (strength >= 0.7) return { label: 'Elite', color: 'bg-elite', textColor: 'text-elite' };
+    if (strength >= 0.6) return { label: 'Strong', color: 'bg-strong', textColor: 'text-strong' };
+    if (strength >= 0.5) return { label: 'Average', color: 'bg-average', textColor: 'text-average' };
+    if (strength >= 0.4) return { label: 'Below Average', color: 'bg-below-average', textColor: 'text-below-average' };
+    return { label: 'Weak', color: 'bg-weak', textColor: 'text-weak' };
   };
 
   const getPercentile = (rank: number, total: number) => {

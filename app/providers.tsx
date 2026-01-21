@@ -7,10 +7,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient({
     defaultOptions: {
       queries: {
-        // Cache data for 5 minutes
-        staleTime: 5 * 60 * 1000,
-        // Keep unused data in cache for 10 minutes
-        gcTime: 10 * 60 * 1000,
+        // Cache data for 2 minutes
+        staleTime: 2 * 60 * 1000,
+        // Keep unused data in cache for 5 minutes
+        gcTime: 5 * 60 * 1000,
         // Don't refetch on window focus (reduces requests)
         refetchOnWindowFocus: false,
         // Don't refetch on reconnect (reduces requests)

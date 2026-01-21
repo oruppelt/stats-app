@@ -21,11 +21,11 @@ export function BidirectionalBar({
   
   // Determine color based on value (negative = harder = red, positive = easier = green)
   const getColor = (val: number) => {
-    if (val < -0.5) return 'bg-red-500';
-    if (val < 0) return 'bg-red-400';
-    if (val === 0) return 'bg-gray-400';
-    if (val < 0.5) return 'bg-green-400';
-    return 'bg-green-500';
+    if (val < -0.5) return 'bg-very-unlucky';
+    if (val < 0) return 'bg-unlucky';
+    if (val === 0) return 'bg-neutral';
+    if (val < 0.5) return 'bg-lucky';
+    return 'bg-very-lucky';
   };
 
   const getLuckCategory = (val: number) => {

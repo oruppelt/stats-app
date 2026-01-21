@@ -4,6 +4,7 @@ import { useLogger } from '@/lib/logger'
 import { useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { WidgetSkeleton } from './WidgetSkeleton'
+import { DESIGN_TOKENS } from '@/lib/design-tokens'
 import {
   Chart as ChartJS,
   LinearScale,
@@ -91,14 +92,7 @@ export function PointsWidget({ selectedTeam }: PointsWidgetProps = {}) {
   };
 
   const getQuadrantColor = (quadrant: string) => {
-    const colors = {
-      excellent: '#10b981',  // Green
-      volatile: '#f59e0b',   // Yellow
-      defensive: '#3b82f6',  // Blue  
-      concerning: '#ef4444', // Red
-      unknown: '#6b7280'     // Gray
-    };
-    return colors[quadrant as keyof typeof colors] || colors.unknown;
+    return DESIGN_TOKENS.quadrants[quadrant as keyof typeof DESIGN_TOKENS.quadrants]?.hex || DESIGN_TOKENS.quadrants.unknown.hex;
   };
 
   if (isLoading) {

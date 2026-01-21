@@ -4,12 +4,12 @@ import { NextResponse } from 'next/server'
 export const dynamic = 'force-dynamic'
 
 // Revalidate every 5 minutes (300 seconds)
-export const revalidate = 300
+export const revalidate = 120
 
 export async function GET() {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}for_against`, {
-      next: { revalidate: 300 }
+      next: { revalidate: 120 }
     })
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)

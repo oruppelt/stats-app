@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { useState } from 'react'
+import { getTeamColor } from '@/lib/nba-team-colors'
 
 interface TeamLogoProps {
   teamName: string;
@@ -29,17 +30,16 @@ export function TeamLogo({ teamName, size = 32, className = "" }: TeamLogoProps)
       .substring(0, 3)
       .toUpperCase();
 
-    // Generate a consistent color based on team name
-    const colorHash = teamName.split('').reduce((hash, char) => char.charCodeAt(0) + ((hash << 5) - hash), 0);
-    const hue = Math.abs(colorHash) % 360;
-    
+    // Use official NBA team colors or generate consistent color as fallback
+    const { primary: backgroundColor } = getTeamColor(teamName);
+
     return (
-      <div 
+      <div
         className={`flex items-center justify-center rounded-full text-white font-bold ${className}`}
-        style={{ 
-          width: size, 
-          height: size, 
-          backgroundColor: `hsl(${hue}, 70%, 50%)`,
+        style={{
+          width: size,
+          height: size,
+          backgroundColor,
           fontSize: size * 0.4
         }}
         title={teamName}

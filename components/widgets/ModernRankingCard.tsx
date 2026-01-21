@@ -21,21 +21,21 @@ export function ModernRankingCard({
 }: ModernRankingCardProps) {
   
   const getRankingBadge = (rank: number) => {
-    if (rank === 1) return { emoji: '🥇', bgColor: 'bg-yellow-100', textColor: 'text-yellow-800', borderColor: 'border-yellow-300' };
-    if (rank === 2) return { emoji: '🥈', bgColor: 'bg-gray-100', textColor: 'text-gray-800', borderColor: 'border-gray-300' };
-    if (rank === 3) return { emoji: '🥉', bgColor: 'bg-orange-100', textColor: 'text-orange-800', borderColor: 'border-orange-300' };
+    if (rank === 1) return { emoji: '🥇', bgColor: 'gradient-gold', textColor: 'text-white', borderColor: 'border-yellow-400' };
+    if (rank === 2) return { emoji: '🥈', bgColor: 'gradient-silver', textColor: 'text-white', borderColor: 'border-gray-400' };
+    if (rank === 3) return { emoji: '🥉', bgColor: 'gradient-bronze', textColor: 'text-white', borderColor: 'border-orange-400' };
     return { emoji: '', bgColor: 'bg-gray-50', textColor: 'text-gray-600', borderColor: 'border-gray-200' };
   };
 
   const badge = getRankingBadge(rank);
 
   return (
-    <div 
+    <div
       className={`
         relative p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer
-        ${isSelected 
-          ? 'bg-blue-50 border-blue-300 shadow-lg' 
-          : 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-md'
+        ${isSelected
+          ? 'bg-primary/5 border-primary shadow-lg'
+          : 'bg-card border-border hover:border-primary/50 hover:shadow-md'
         }
       `}
       onClick={onClick}

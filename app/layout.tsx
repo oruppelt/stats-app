@@ -1,11 +1,15 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
+import { GeistSans } from 'geist/font/sans'
 import "@/app/globals.css"
 import { Providers } from "./providers"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "sonner"
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({
+  subsets: ["latin"],
+  variable: '--font-sans',
+})
 
 export const metadata: Metadata = {
   title: "NBA Fantasy Stats Dashboard",
@@ -18,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${GeistSans.variable}`}>
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
