@@ -85,7 +85,7 @@ export function NivoHeatMap({
         margin={{ top: 120, right: 90, bottom: 80, left: 160 }}
         colors={{
           type: 'quantize',
-          colors: DESIGN_TOKENS.heatmap.colors // Win rate gradient: red → yellow → green
+          colors: [...DESIGN_TOKENS.heatmap.colors] // Win rate gradient: red → yellow → green
         }}
         emptyColor="#f3f4f6"
         labelTextColor="#000000"
